@@ -70,14 +70,18 @@ export default function LandingPage() {
   const [show, setShow] = useState(true);
 
   useEffect(() => {
+    let timeoutId;
     const id = setInterval(() => {
       setShow(false);
-      setTimeout(() => {
+      timeoutId = setTimeout(() => {
         setQuoteIdx((i) => (i + 1) % quotes.length);
         setShow(true);
       }, 500);
     }, 4500);
-    return () => clearInterval(id);
+    return () => {
+      clearInterval(id);
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   const q = quotes[quoteIdx];
