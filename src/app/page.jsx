@@ -87,7 +87,7 @@ export default function LandingPage() {
   const q = quotes[quoteIdx];
 
   return (
-    <main className="flex flex-col items-center w-full -my-15 overflow-x-hidden">
+    <main className="flex flex-col items-center w-full  overflow-x-hidden">
       <section className="relative w-full min-h-screen flex flex-col items-center justify-center px-5 pt-28 pb-16 text-center gap-8">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-72 h-72 md:w-[700px] md:h-[700px] rounded-full bg-primary/8 blur-3xl" />
@@ -164,7 +164,7 @@ export default function LandingPage() {
             </CardContent>
           </Card>
 
-          <div className="grid grid-cols-3 gap-6 md:gap-16 pt-2 w-full max-w-xs md:max-w-none">
+          <div className="grid grid-cols-3 gap-6 md:gap-16 pt-8 w-full max-w-xs md:max-w-none">
             {[
               {value: "10K+", label: "Journals"},
               {value: "47", label: "Languages"},
