@@ -12,6 +12,7 @@ import {Card, CardContent} from "@/components/ui/card";
 import {authClient} from "@/lib/auth-client";
 import {ArrowRight, Eye, EyeClosed, Lock, Mail, User} from "lucide-react";
 import toast from "react-hot-toast";
+import {useLoggedIn} from "@/hooks/auth.hook";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -20,6 +21,8 @@ export default function SignUpPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useLoggedIn();
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -48,7 +51,7 @@ export default function SignUpPage() {
         },
       );
     } catch (error) {
-      toast.error(error.message || "Something went wrong. Please try again.");
+      toast.error(error?.message || "Something went wrong. Please try again.");
       setLoading(false);
     }
   };

@@ -2,6 +2,7 @@
 import {authClient} from "@/lib/auth-client";
 import {useRouter} from "next/navigation";
 import {useEffect} from "react";
+import toast from "react-hot-toast";
 
 export function useLoggedIn() {
   const router = useRouter();
@@ -9,6 +10,7 @@ export function useLoggedIn() {
 
   useEffect(() => {
     if (!isPending && session) {
+      toast.error("You are already logged in.");
       router.push("/");
     }
   }, [session, isPending, router]);

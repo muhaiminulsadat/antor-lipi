@@ -12,6 +12,7 @@ import {Card, CardContent} from "@/components/ui/card";
 import {authClient} from "@/lib/auth-client";
 import {ArrowRight, Mail, Eye, EyeClosed, Lock} from "lucide-react";
 import toast from "react-hot-toast";
+import {useLoggedIn} from "@/hooks/auth.hook";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,6 +20,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useLoggedIn();
 
   const handleLogin = async (e) => {
     e.preventDefault();
