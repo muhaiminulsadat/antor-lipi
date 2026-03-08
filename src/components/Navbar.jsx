@@ -11,7 +11,7 @@ import {HugeiconsIcon} from "@hugeicons/react";
 export default function Navbar() {
   const isLoggedIn = true;
   return (
-    <nav className="w-full flex items-center justify-between px-15 py-3 font-bold">
+    <nav className="w-full flex items-center justify-between px-15 py-2 bg-primary/5 font-bold">
       <Link href="/">
         <Image
           src="/logo-t.png"
