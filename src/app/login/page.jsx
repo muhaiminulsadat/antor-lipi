@@ -40,7 +40,7 @@ export default function LoginPage() {
         onSuccess: () => {
           toast.success("Welcome back! Taking you in...");
           setLoading(false);
-          router.push("/dashboard");
+          router.push("/");
         },
         onRequest: () => {
           setLoading(true);

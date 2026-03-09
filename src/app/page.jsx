@@ -126,7 +126,7 @@ export default function LandingPage() {
               className="w-full sm:w-auto rounded-full px-8 text-xs tracking-[0.15em] uppercase shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-300"
               asChild
             >
-              <Link href="/sign-up">Begin Writing — Free</Link>
+              <Link href="/journal/write">Begin Writing — Free</Link>
             </Button>
             <Button
               size="lg"

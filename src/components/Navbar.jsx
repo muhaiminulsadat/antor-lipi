@@ -5,9 +5,16 @@ import Link from "next/link";
 import {useState} from "react";
 import {Button} from "@/components/ui/button";
 import {Separator} from "@/components/ui/separator";
-import {Sheet, SheetContent, SheetTrigger} from "@/components/ui/sheet";
-import {useGetCurrentUser} from "@/hooks/auth.hook";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {useGetCurrentUser, useLogOut, useSignOut} from "@/hooks/auth.hook";
 import {Folders, Pencil, Menu, X} from "lucide-react";
+import {authClient} from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
 const navLinks = [
   {label: "Features", href: "/#features"},
@@ -17,6 +24,8 @@ const navLinks = [
 export default function Navbar() {
   const {user} = useGetCurrentUser();
   const [open, setOpen] = useState(false);
+
+  const {logout} = useLogOut();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 w-full bg-background/60 backdrop-blur-xl border-b border-border/40 shadow-sm">
@@ -78,6 +87,9 @@ export default function Navbar() {
                   Write New
                 </Link>
               </Button>
+              <Button variant="destructive" size="sm" onClick={logout}>
+                Log Out
+              </Button>{" "}
             </div>
           )}
         </div>
@@ -97,6 +109,7 @@ export default function Navbar() {
               side="right"
               className="w-72 p-0 bg-background/95 backdrop-blur-xl"
             >
+              <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
               <div className="flex flex-col h-full p-6 gap-6">
                 <div className="flex items-center justify-between">
                   <Image
@@ -158,6 +171,17 @@ export default function Navbar() {
                         <Pencil size={16} />
                         Write New
                       </Link>
+                    </Button>
+
+                    <Button
+                      variant={"destructive"}
+                      className="w-full rounded-xl justify-start gap-3 text-sm shadow-md shadow-primary/20"
+                      onClick={() => {
+                        setOpen(false);
+                        logout();
+                      }}
+                    >
+                      Log Out
                     </Button>
                   </div>
                 )}
