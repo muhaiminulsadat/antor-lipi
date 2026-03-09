@@ -28,7 +28,7 @@ export default function Navbar() {
   const {logout} = useLogOut();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full bg-background/60 backdrop-blur-xl border-b border-border/40 shadow-sm">
+    <header className="fixed top-0 left-0 right-0 z-50 w-full bg-background/20 backdrop-blur-xl border-b border-border/40 shadow-sm">
       <nav className="flex items-center justify-between px-5 md:px-12 py-3 max-w-7xl mx-auto">
         <Link href="/" className="flex items-center shrink-0">
           <Image
