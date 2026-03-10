@@ -28,7 +28,7 @@ export default function Navbar() {
   const {logout} = useLogOut();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full bg-background/20 backdrop-blur-xl border-b border-border/40 shadow-sm">
+    <header className="fixed top-0 left-0 right-0 z-50 w-full bg-background/5 backdrop-blur-xl border-b border-border/40 shadow-sm">
       <nav className="flex items-center justify-between px-5 md:px-12 py-3 max-w-7xl mx-auto">
         <Link href="/" className="flex items-center shrink-0">
           <Image
@@ -72,7 +72,7 @@ export default function Navbar() {
                 className="rounded-full px-5 text-xs tracking-wide border-border/60 hover:border-primary/40 hover:bg-primary/5 transition-all duration-300 gap-2"
                 asChild
               >
-                <Link href="/collections">
+                <Link href="/dashboard">
                   <Folders size={14} />
                   Collections
                 </Link>
@@ -82,12 +82,17 @@ export default function Navbar() {
                 className="rounded-full px-5 text-xs tracking-wide shadow-md shadow-primary/20 hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300 gap-2"
                 asChild
               >
-                <Link href="/write">
+                <Link href="/journal/write">
                   <Pencil size={14} />
                   Write New
                 </Link>
               </Button>
-              <Button variant="destructive" size="sm" onClick={logout}>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={logout}
+                className={"rounded-full px-3"}
+              >
                 Log Out
               </Button>{" "}
             </div>

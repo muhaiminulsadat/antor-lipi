@@ -31,28 +31,33 @@ export default function LoginPage() {
       return;
     }
 
-    const {data, error} = await authClient.signIn.email(
-      {
-        email,
-        password,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Welcome back! Taking you in...");
-          setLoading(false);
-          router.push("/");
+    try {
+      const {data, error} = await authClient.signIn.email(
+        {
+          email,
+          password,
         },
-        onRequest: () => {
-          setLoading(true);
+        {
+          onSuccess: () => {
+            toast.success("Welcome back! Taking you in...");
+            setLoading(false);
+            router.push("/");
+          },
+          onRequest: () => {
+            setLoading(true);
+          },
+          onError: (ctx) => {
+            toast.error(
+              ctx.error.message || "Something went wrong. Please try again.",
+            );
+            setLoading(false);
+          },
         },
-        onError: (ctx) => {
-          toast.error(
-            ctx.error.message || "Something went wrong. Please try again.",
-          );
-          setLoading(false);
-        },
-      },
-    );
+      );
+    } catch (error) {
+      setLoading(false);
+      toast.error(error?.message || "Something went wrong. Please try again.");
+    }
   };
 
   const handleGoogleLogin = async () => {

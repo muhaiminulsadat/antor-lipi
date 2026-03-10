@@ -104,20 +104,24 @@ export default function WritePage() {
       setTitle("");
       setMood("");
       setCollectionId("");
-      editorRef.current.replaceBlocks(editorRef.current.document, [
+      editorRef.current?.replaceBlocks(editorRef.current.document, [
         {type: "paragraph", content: ""},
       ]);
       toast.success("Entry published!");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred.",
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen w-full px-4 py-28 md:py-32">
-      <div className="max-w-3xl mx-auto flex flex-col gap-8">
+    <div className="min-h-screen w-full px-4">
+      <div className="max-w-3xl mx-auto flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           <p className="text-[9px] uppercase tracking-[0.3em] text-primary">
             New Entry

@@ -26,3 +26,18 @@ export const createJournal = async (data) => {
     return {success: false, error: error.message};
   }
 };
+
+export const getUserJournalEntries = async () => {
+  try {
+    const {user} = await getCurrentUser();
+    if (!user) throw new Error("Unauthorized!");
+
+    await connectDB();
+
+    const entries = await Entry.find({userId: user.id}).sort({createdAt: -1});
+
+    return {success: true, data: convertToObject(entries)};
+  } catch (error) {
+    return {success: false, error: error.message};
+  }
+};

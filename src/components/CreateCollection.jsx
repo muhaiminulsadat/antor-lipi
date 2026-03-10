@@ -40,8 +40,9 @@ export default function CreateCollectionDialog({
         return;
       }
 
-      //   console.log(res?.data?._id);
-      setCollectionId(res?.data?._id);
+      if (setCollectionId) {
+        setCollectionId(res?.data?._id);
+      }
 
       toast.success("Collection created!");
       setName("");

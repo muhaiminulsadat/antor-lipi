@@ -214,11 +214,10 @@ export default function JournalEditor({editorRef}) {
       <div className="min-h-[420px] px-2 py-1">
         <BlockNoteView
           editor={editor}
-          formattingToolbar={true}
+          formattingToolbar={false}
           theme={editorTheme}
         />
       </div>
-
       <div className="flex items-center justify-between px-4 py-2 border-t border-border/30 bg-muted/10">
         <p className="text-[9px] text-muted-foreground/40 tracking-wide">
           ✦ Write your thoughts freely

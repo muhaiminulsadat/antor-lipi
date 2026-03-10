@@ -20,7 +20,7 @@ export const createCollection = async (data) => {
       userId: user.id,
     });
 
-    revalidatePath("/collections");
+    // revalidatePath("/");
     return {success: true, data: JSON.parse(JSON.stringify(collection))};
   } catch (error) {
     return {success: false, error: error.message};
@@ -67,12 +67,16 @@ export const updateCollection = async (id, data) => {
 
     await connectDB();
 
+    const updateFields = {};
+    if (data.name !== undefined) updateFields.name = data.name;
+    if (data.description !== undefined)
+      updateFields.description = data.description;
+
     const collection = await Collection.findOneAndUpdate(
       {_id: id, userId: user.id},
-      {$set: {name: data.name, description: data.description}},
+      {$set: updateFields},
       {new: true},
     );
-
     if (!collection) throw new Error("Collection not found!");
 
     revalidatePath("/collections");

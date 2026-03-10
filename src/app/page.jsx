@@ -134,7 +134,7 @@ export default function LandingPage() {
               className="w-full sm:w-auto rounded-full px-8 text-xs tracking-[0.15em] uppercase border-border/60 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300"
               asChild
             >
-              <Link href="/sign-in">Sign In</Link>
+              <Link href="/login">Sign In</Link>
             </Button>
           </div>
 

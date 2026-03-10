@@ -16,14 +16,37 @@ export const auth = betterAuth({
     client,
   }),
 
+  trustedOrigins: ["*"],
+
   session: {
     cookieCache: {
       enabled: true,
       maxAge: 60 * 60,
     },
   },
+  user: {
+    additionalFields: {
+      name: {
+        type: "string",
+      },
+      role: {
+        type: "string",
+        defaultValue: "seeker",
+      },
+      companyName: {
+        type: "string",
 
-  plugins: [nextCookies(), admin({defaultRole: "user"})],
+        defaultValue: null,
+        input: true,
+      },
+      avatar: {
+        type: "string",
+        defaultValue: null,
+      },
+    },
+  },
+
+  plugins: [nextCookies()],
 
   emailAndPassword: {
     enabled: true,
@@ -59,7 +82,7 @@ export const getAllUsers = async () => {
     },
   });
 
-  return data?.users ?? [];
+  return data.users;
 };
 
 //Sign out the user
@@ -70,7 +93,5 @@ export async function signOut() {
 
   if (result.success) {
     redirect("/login");
-  } else {
-    throw new Error("Sign out failed");
   }
 }
