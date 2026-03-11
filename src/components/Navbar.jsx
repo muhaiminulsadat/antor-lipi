@@ -74,7 +74,7 @@ export default function Navbar() {
               >
                 <Link href="/dashboard">
                   <Folders size={14} />
-                  Collections
+                  Dashboard
                 </Link>
               </Button>
               <Button
@@ -162,9 +162,9 @@ export default function Navbar() {
                       onClick={() => setOpen(false)}
                       asChild
                     >
-                      <Link href="/collections">
+                      <Link href="/dashboard">
                         <Folders size={16} />
-                        Collections
+                        Dashboard
                       </Link>
                     </Button>
                     <Button
