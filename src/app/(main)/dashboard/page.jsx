@@ -1,6 +1,7 @@
 import {getUserJournalEntries} from "@/actions/journal.action";
 import Collections from "./_components/Collections";
 import {getCollections} from "@/actions/collection.action";
+import MoodAnalytics from "./_components/MoodAnalytics";
 
 const Dashboard = async () => {
   const {data: journals} = await getUserJournalEntries();
@@ -18,10 +19,9 @@ const Dashboard = async () => {
     return acc;
   }, {});
 
-
-
   return (
-    <div>
+    <div className="">
+      <MoodAnalytics entries={journals || []} />{" "}
       <Collections
         entries={entryByCollection}
         collections={collections || []}

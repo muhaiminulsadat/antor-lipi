@@ -11,7 +11,7 @@ export default function CollectionFolder({name, entries, collection}) {
 
   return (
     <Link
-      href={`/collections/${name === "Unorganized" ? "unorganized" : collection?._id}`}
+      href={`/collection/${name === "Unorganized" ? "unorganized" : (collection?._id ?? "unorganized")}`}
       className="group block"
     >
       <div className="relative flex flex-col max-w-md cursor-pointer">

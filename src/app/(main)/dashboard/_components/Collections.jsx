@@ -2,9 +2,8 @@ import CollectionFolder from "./CollectionFolder";
 import CreateCollectionFolder from "./CreateNewCollection";
 
 const Collections = ({collections, entries}) => {
-
   return (
-    <div className="min-h-screen max-w-6xl mx-auto">
+    <div className="min-h-screen max-w-6xl my-10 mx-auto">
       {/* Header */}
       <div className="flex flex-col gap-2 mb-5">
         <h1 className="font-serif text-xl md:text-3xl font-light text-foreground">

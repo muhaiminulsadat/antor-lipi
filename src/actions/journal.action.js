@@ -41,3 +41,59 @@ export const getUserJournalEntries = async () => {
     return {success: false, error: error.message};
   }
 };
+
+export const getEntriesByCollectionId = async (collectionId) => {
+  try {
+    const {user} = await getCurrentUser();
+    if (!user) throw new Error("Unauthorized!");
+
+    await connectDB();
+
+    const entries = await Entry.find({
+      collectionId,
+      userId: user.id,
+    }).sort({createdAt: -1});
+
+    return {success: true, data: JSON.parse(JSON.stringify(entries))};
+  } catch (error) {
+    return {success: false, error: error.message};
+  }
+};
+
+export const getUnorganizedEntries = async () => {
+  try {
+    const {user} = await getCurrentUser();
+    if (!user) throw new Error("Unauthorized!");
+
+    await connectDB();
+
+    const entries = await Entry.find({
+      userId: user.id,
+      $or: [
+        {collectionId: null},
+        {collectionId: ""},
+        {collectionId: {$exists: false}},
+      ],
+    }).sort({createdAt: -1});
+
+    return {success: true, data: JSON.parse(JSON.stringify(entries))};
+  } catch (error) {
+    return {success: false, error: error.message};
+  }
+};
+
+export const getJournalEntryById = async (id) => {
+  try {
+    const {user} = await getCurrentUser();
+    if (!user) throw new Error("Unauthorized!");
+
+    await connectDB();
+
+    const entry = await Entry.findOne({_id: id, userId: user.id});
+    if (!entry) throw new Error("Entry not found!");
+
+    return {success: true, data: JSON.parse(JSON.stringify(entry))};
+  } catch (error) {
+    return {success: false, error: error.message};
+  }
+};

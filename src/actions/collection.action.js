@@ -102,6 +102,7 @@ export const deleteCollection = async (id) => {
 
     revalidatePath("/collections");
     return {success: true};
+    // return {success: true};
   } catch (error) {
     return {success: false, error: error.message};
   }
