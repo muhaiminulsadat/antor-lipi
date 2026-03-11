@@ -156,16 +156,13 @@ export default function Navbar() {
                         </Link>
                       ))}
                       <div className="py-2">
-                        <Separator className="opacity-20" />
+                        <Separator className="opacity-80" />
                       </div>
                     </>
                   )}
 
                   {user && (
                     <>
-                      <p className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground/40 px-4 pb-1 pt-1">
-                        Navigate
-                      </p>
                       <Link
                         href="/dashboard"
                         onClick={() => setOpen(false)}
@@ -184,14 +181,6 @@ export default function Navbar() {
                       >
                         <Pencil size={15} className="text-primary/70" />
                         Write New Entry
-                      </Link>
-                      <Link
-                        href="/collections"
-                        onClick={() => setOpen(false)}
-                        className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground hover:bg-primary/6 transition-all duration-200 py-3 px-4 rounded-xl"
-                      >
-                        <Folders size={15} className="text-primary/70" />
-                        Collections
                       </Link>
                     </>
                   )}
