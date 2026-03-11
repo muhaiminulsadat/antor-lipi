@@ -5,6 +5,7 @@ import {notFound} from "next/navigation";
 import Link from "next/link";
 import {Badge} from "@/components/ui/badge";
 import EntryContentWrapper from "./_components/EntryContentWrapper";
+import DeleteEntryButton from "./_components/DeleteEntryButton";
 
 const moodEmoji = {
   happy: "😊",
@@ -68,9 +69,12 @@ const JournalEntryPage = async ({params}) => {
         </div>
 
         {/* Title */}
-        <h1 className="font-serif text-3xl md:text-5xl font-light text-foreground leading-snug">
-          {entry.title}
-        </h1>
+        <div className="flex items-start justify-between gap-4">
+          <h1 className="font-serif text-3xl md:text-5xl font-light text-foreground leading-snug">
+            {entry.title}
+          </h1>
+          <DeleteEntryButton entryId={entry._id} entryTitle={entry.title} />
+        </div>
 
         {/* Date + Time */}
         <div className="flex flex-wrap items-center gap-3">

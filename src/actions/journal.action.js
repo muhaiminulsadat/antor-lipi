@@ -97,3 +97,20 @@ export const getJournalEntryById = async (id) => {
     return {success: false, error: error.message};
   }
 };
+
+export const deleteJournalEntry = async (id) => {
+  try {
+    const { user } = await getCurrentUser();
+    if (!user) throw new Error("Unauthorized!");
+
+    await connectDB();
+
+    const entry = await Entry.findOneAndDelete({ _id: id, userId: user.id });
+    if (!entry) throw new Error("Entry not found!");
+
+    revalidatePath("/journal");
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
