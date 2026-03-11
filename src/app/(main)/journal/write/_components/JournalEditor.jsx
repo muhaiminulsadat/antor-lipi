@@ -81,9 +81,9 @@ function ToolbarButton({onClick, title, children}) {
   );
 }
 
-export default function JournalEditor({editorRef}) {
+export default function JournalEditor({editorRef, initialContent}) {
   const editor = useCreateBlockNote({
-    initialContent: [{type: "paragraph", content: ""}],
+    initialContent: initialContent ?? [{type: "paragraph", content: ""}],
   });
 
   useEffect(() => {

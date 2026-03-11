@@ -4,8 +4,10 @@ import {Calendar, Clock, Folder} from "lucide-react";
 import {notFound} from "next/navigation";
 import Link from "next/link";
 import {Badge} from "@/components/ui/badge";
+import {Separator} from "@/components/ui/separator";
 import EntryContentWrapper from "./_components/EntryContentWrapper";
 import DeleteEntryButton from "./_components/DeleteEntryButton";
+import EditButton from "./_components/EditButton";
 
 const moodEmoji = {
   happy: "😊",
@@ -20,7 +22,6 @@ const moodEmoji = {
 
 const JournalEntryPage = async ({params}) => {
   const {journalId} = await params;
-
   const {data: entry, success} = await getJournalEntryById(journalId);
 
   if (!success || !entry) return notFound();
@@ -33,10 +34,8 @@ const JournalEntryPage = async ({params}) => {
   const emoji = moodEmoji[entry.mood?.toLowerCase()] ?? "📝";
 
   return (
-    <div className="flex flex-col gap-8 max-w-3xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col gap-5">
-        {/* Badges */}
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex flex-col gap-6 sm:gap-8">
+      <div className="flex flex-col gap-4 sm:gap-5">
         <div className="flex flex-wrap items-center gap-2">
           {entry.mood && (
             <Badge
@@ -68,35 +67,39 @@ const JournalEntryPage = async ({params}) => {
           )}
         </div>
 
-        {/* Title */}
-        <div className="flex items-start justify-between gap-4">
-          <h1 className="font-serif text-3xl md:text-5xl font-light text-foreground leading-snug">
+        <div className="flex gap-3">
+          <h1 className="font-serif text-2xl sm:text-4xl md:text-5xl font-light text-foreground leading-snug">
             {entry.title}
           </h1>
-          <DeleteEntryButton entryId={entry._id} entryTitle={entry.title} />
+          <div className="flex items-center gap-2">
+            <EditButton entryId={journalId} />
+            <DeleteEntryButton entryId={entry._id} entryTitle={entry.title} />
+          </div>
         </div>
 
-        {/* Date + Time */}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
           <div className="flex items-center gap-1.5">
-            <Calendar size={12} className="text-muted-foreground/40" />
-            <span className="text-xs text-muted-foreground/50">{fullDate}</span>
+            <Calendar size={11} className="text-muted-foreground/40" />
+            <span className="text-[11px] sm:text-xs text-muted-foreground/50">
+              {fullDate}
+            </span>
           </div>
-          <div className="h-3 w-px bg-border/50" />
+          <div className="hidden sm:block h-3 w-px bg-border/50" />
           <div className="flex items-center gap-1.5">
-            <Clock size={12} className="text-muted-foreground/40" />
-            <span className="text-xs text-muted-foreground/50">{fullTime}</span>
+            <Clock size={11} className="text-muted-foreground/40" />
+            <span className="text-[11px] sm:text-xs text-muted-foreground/50">
+              {fullTime}
+            </span>
           </div>
-          <div className="h-3 w-px bg-border/50" />
-          <span className="text-xs text-muted-foreground/40 italic">
+          <div className="hidden sm:block h-3 w-px bg-border/50" />
+          <span className="text-[11px] sm:text-xs text-muted-foreground/40 italic">
             {timeAgo}
           </span>
         </div>
 
-        <div className="h-px bg-border/30" />
+        <Separator className="opacity-30" />
       </div>
 
-      {/* Content */}
       <EntryContentWrapper key={entry._id} content={entry.content} />
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import {useEffect, useRef, useState} from "react";
+import {useSearchParams, useRouter} from "next/navigation";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
@@ -19,7 +20,11 @@ import dynamic from "next/dynamic";
 import toast from "react-hot-toast";
 import {useNotLoggedIn} from "@/hooks/auth.hook";
 import {getMoodById} from "@/lib/utils";
-import {createJournal} from "@/actions/journal.action";
+import {
+  createJournal,
+  getJournalById,
+  updateJournalEntry,
+} from "@/actions/journal.action";
 import CreateCollectionDialog from "@/components/CreateCollection";
 import {getCollections} from "@/actions/collection.action";
 
@@ -27,23 +32,24 @@ const JournalEditor = dynamic(() => import("./_components/JournalEditor"), {
   ssr: false,
 });
 
-const mockCollections = [
-  {_id: "1", name: "Morning Thoughts"},
-  {_id: "2", name: "Work Journal"},
-  {_id: "3", name: "Gratitude Log"},
-];
-
 export default function WritePage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const editId = searchParams.get("edit"); // null = create mode, string = edit mode
+
   const [title, setTitle] = useState("");
   const [mood, setMood] = useState("");
   const [collectionId, setCollectionId] = useState("");
   const [collectionDialogOpen, setCollectionDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingEntry, setLoadingEntry] = useState(!!editId);
+  const [initialContent, setInitialContent] = useState(undefined);
   const editorRef = useRef(null);
   const [collections, setCollections] = useState([]);
 
   useNotLoggedIn();
 
+  // Fetch collections
   useEffect(() => {
     const fetchCollections = async () => {
       const res = await getCollections();
@@ -53,9 +59,37 @@ export default function WritePage() {
         toast.error(res.error || "Failed to load collections.");
       }
     };
-
     fetchCollections();
   }, [collectionDialogOpen]);
+
+  // Pre-fill form if in edit mode
+  useEffect(() => {
+    if (!editId) return;
+
+    const fetchEntry = async () => {
+      setLoadingEntry(true);
+      const res = await getJournalById(editId);
+      if (res.success) {
+        const entry = res.data;
+        setTitle(entry.title || "");
+        setMood(entry.mood || "");
+        setCollectionId(entry.collectionId || "");
+        if (entry.content) {
+          try {
+            setInitialContent(JSON.parse(entry.content));
+          } catch {
+            setInitialContent(undefined);
+          }
+        }
+      } else {
+        toast.error("Could not load entry for editing.");
+        router.push("/journal/write");
+      }
+      setLoadingEntry(false);
+    };
+
+    fetchEntry();
+  }, [editId]);
 
   const handleCollectionChange = (value) => {
     if (value === "new") {
@@ -65,7 +99,7 @@ export default function WritePage() {
     setCollectionId(value);
   };
 
-  const handlePublish = async () => {
+  const handleSubmit = async () => {
     if (!title.trim()) {
       toast.error("Please add a title.");
       return;
@@ -83,31 +117,41 @@ export default function WritePage() {
       return;
     }
 
-    const entry = {
+    const entryData = {
       title,
       mood,
       moodScore: gotMood.score,
       content: JSON.stringify(content),
-
-      ...(collectionId && {collectionId}),
+      collectionId: collectionId || null,
     };
 
     try {
       setLoading(true);
-      const res = await createJournal(entry);
 
-      if (!res?.success) {
-        toast.error(res?.error || "Failed to publish entry.");
-        return;
+      if (editId) {
+        // ── Edit mode ──
+        const res = await updateJournalEntry(editId, entryData);
+        if (!res?.success) {
+          toast.error(res?.error || "Failed to save changes.");
+          return;
+        }
+        toast.success("Entry updated!");
+        router.push(`/journal/${editId}`);
+      } else {
+        // ── Create mode ──
+        const res = await createJournal(entryData);
+        if (!res?.success) {
+          toast.error(res?.error || "Failed to publish entry.");
+          return;
+        }
+        setTitle("");
+        setMood("");
+        setCollectionId("");
+        editorRef.current?.replaceBlocks(editorRef.current.document, [
+          {type: "paragraph", content: ""},
+        ]);
+        toast.success("Entry published!");
       }
-
-      setTitle("");
-      setMood("");
-      setCollectionId("");
-      editorRef.current?.replaceBlocks(editorRef.current.document, [
-        {type: "paragraph", content: ""},
-      ]);
-      toast.success("Entry published!");
     } catch (error) {
       toast.error(
         error instanceof Error
@@ -119,19 +163,38 @@ export default function WritePage() {
     }
   };
 
+  if (loadingEntry) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center">
+        <Loader className="animate-spin text-primary" size={28} />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen w-full px-4">
       <div className="max-w-3xl mx-auto flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           <p className="text-[9px] uppercase tracking-[0.3em] text-primary">
-            New Entry
+            {editId ? "Edit Entry" : "New Entry"}
           </p>
           <h1 className="font-serif text-4xl md:text-5xl font-light text-foreground">
-            What&apos;s on your{" "}
-            <span className="italic text-primary">mind?</span>
+            {editId ? (
+              <>
+                Refine your{" "}
+                <span className="italic text-primary">thoughts</span>
+              </>
+            ) : (
+              <>
+                What&apos;s on your{" "}
+                <span className="italic text-primary">mind?</span>
+              </>
+            )}
           </h1>
           <p className="text-muted-foreground text-sm">
-            This is your space. Write freely, honestly, beautifully.
+            {editId
+              ? "Update your entry below."
+              : "This is your space. Write freely, honestly, beautifully."}
           </p>
         </div>
 
@@ -192,20 +255,26 @@ export default function WritePage() {
             <Label className="text-xs tracking-widest uppercase text-muted-foreground">
               Your Thoughts
             </Label>
-            <JournalEditor editorRef={editorRef} />
+            <JournalEditor
+              editorRef={editorRef}
+              initialContent={initialContent}
+            />
           </div>
         </div>
 
         <div className="flex justify-end">
           <Button
-            onClick={handlePublish}
+            onClick={handleSubmit}
             disabled={loading}
             className="rounded-full px-8 text-xs tracking-widest uppercase shadow-lg shadow-primary/20 hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300 gap-2"
           >
             {loading ? (
               <>
-                <Loader size={14} className="animate-spin" /> Publishing...
+                <Loader size={14} className="animate-spin" />
+                {editId ? "Saving..." : "Publishing..."}
               </>
+            ) : editId ? (
+              "Save Changes"
             ) : (
               "Publish Entry"
             )}

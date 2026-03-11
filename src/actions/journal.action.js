@@ -100,17 +100,54 @@ export const getJournalEntryById = async (id) => {
 
 export const deleteJournalEntry = async (id) => {
   try {
-    const { user } = await getCurrentUser();
+    const {user} = await getCurrentUser();
     if (!user) throw new Error("Unauthorized!");
 
     await connectDB();
 
-    const entry = await Entry.findOneAndDelete({ _id: id, userId: user.id });
+    const entry = await Entry.findOneAndDelete({_id: id, userId: user.id});
     if (!entry) throw new Error("Entry not found!");
 
     revalidatePath("/journal");
-    return { success: true };
+    return {success: true};
   } catch (error) {
-    return { success: false, error: error.message };
+    return {success: false, error: error.message};
+  }
+};
+
+export const updateJournalEntry = async (id, data) => {
+  try {
+    const {user} = await getCurrentUser();
+    if (!user) throw new Error("Unauthorized!");
+
+    await connectDB();
+
+    // Prevent overwriting protected fields
+    const {userId, _id, ...safeData} = data;
+
+    const entry = await Entry.findOneAndUpdate(
+      {_id: id, userId: user.id},
+      {...safeData},
+      {new: true},
+    );
+    if (!entry) throw new Error("Entry not found!");
+
+    revalidatePath(`/journal/${id}`);
+    return {success: true, data: JSON.parse(JSON.stringify(entry))};
+  } catch (error) {
+    return {success: false, error: error.message};
+  }
+};
+
+export const getJournalById = async (id) => {
+  try {
+    const {user} = await getCurrentUser();
+    if (!user) throw new Error("Unauthorized!");
+    await connectDB();
+    const entry = await Entry.findOne({_id: id, userId: user.id}).lean();
+    if (!entry) throw new Error("Entry not found!");
+    return {success: true, data: JSON.parse(JSON.stringify(entry))};
+  } catch (error) {
+    return {success: false, error: error.message};
   }
 };
